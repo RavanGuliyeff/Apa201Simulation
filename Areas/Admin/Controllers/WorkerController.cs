@@ -3,12 +3,14 @@ using FinalExamSimulation.DAL.Contexts;
 using FinalExamSimulation.Models;
 using FinalExamSimulation.Utilities.Enums;
 using FinalExamSimulation.Utilities.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinalExamSimulation.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class WorkerController : Controller
     {
         private readonly AppDbContext _context;

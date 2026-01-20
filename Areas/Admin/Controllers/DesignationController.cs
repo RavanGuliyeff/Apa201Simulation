@@ -1,11 +1,13 @@
 ﻿using FinalExamSimulation.DAL.Contexts;
 using FinalExamSimulation.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinalExamSimulation.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class DesignationController : Controller
     {
         private readonly AppDbContext _context;

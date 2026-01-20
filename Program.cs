@@ -1,4 +1,7 @@
+﻿using FinalExamSimulation.DAL;
 using FinalExamSimulation.DAL.Contexts;
+using FinalExamSimulation.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinalExamSimulation
@@ -17,21 +20,38 @@ namespace FinalExamSimulation
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+
+
+            // Bu hissədə Identitynin konfiqurasiyalarını əlavə edirik
+            // opt. ilə yazılan hissə vacib deyil öz istəyimizdən asılıdır(pass uzunluğu 8 olsun falan) boş qala bilər
+            // amma onun xaricindəki hissələr mütləq olmalıdır
+            builder.Services.AddIdentity<AppUser, IdentityRole>(opt =>
+            {
+                opt.Password.RequiredLength = 8;
+                opt.Password.RequireNonAlphanumeric = false;
+
+                opt.User.RequireUniqueEmail = true;
+
+                opt.Lockout.AllowedForNewUsers = true;
+                opt.Lockout.MaxFailedAccessAttempts = 3;
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);
+            }
+            ).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+
+            // Bunlar da identity işlətmək üçün mütləq olmalıdır
+            // Birinci uzun gəlir sonra qısa
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
